@@ -1,0 +1,13 @@
+<config>
+
+    <server>
+        <bindaddr>192.168.126.128:9293</bindaddr>
+        <host>xxx.com</host>
+    </server>
+
+    <mysql>
+        <admin_dsn>lqwjy:lqwjy628904@(192.168.126.128:3306)/huanke?charset=utf8&amp;parseTime=true&amp;timeout=30s&amp;autocommit=true&amp;loc=Local</admin_dsn>
+        <maxidleconn>100</maxidleconn>
+    </mysql>
+
+</config>
