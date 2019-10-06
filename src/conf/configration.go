@@ -24,13 +24,9 @@ type xmlMysql struct {
 
 var Global xmlGlobal
 
-func InitData(filename string) bool {
+func InitData(filename string) error {
 	_, err := LoadXmlConfig(filename, &Global)
-	if err != nil {
-		fmt.Printf("err:%s\n", err)
-		return false
-	}
-	return true
+	return err
 }
 
 func LoadXmlConfig(filename string, xmlStruct interface{}) (contents []byte, err error) {
