@@ -13,7 +13,6 @@ type HelloResponse struct {
 }
 
 func (this *IndexController) Post() {
-
 	var resultRsp = HelloResponse{}
 	resultRsp.Code = 101
 	resultRsp.ExtraMsg = "Welcome to Huanke!"

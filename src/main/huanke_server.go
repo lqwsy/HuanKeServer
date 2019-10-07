@@ -33,6 +33,7 @@ func main(){
 
 	beego.Router("/huanke/index", &controller.IndexController{})
 	beego.Router("/huanke/register", &controller.RegisterController{})
+	beego.Router("/huanke/login", &controller.LoginController{})
 
 	beego.Run(configration.Global.Server.Bindaddr)
 }

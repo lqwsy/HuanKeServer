@@ -6,6 +6,7 @@ import (
 	"github.com/wonderivan/logger"
 	"HuanKeServer/src/model"
 	"github.com/astaxie/beego/orm"
+	"strings"
 )
 
 type LoginController struct {
@@ -34,6 +35,7 @@ func (this *LoginController) Post() {
 		this.ServeJSON()
 		return
 	}
+	logger.Debug("register param : ",registerRequest)
 
 	var user model.TsUser
 	o := orm.NewOrm()
@@ -51,17 +53,24 @@ func (this *LoginController) Post() {
 
 	if err == orm.ErrNoRows || user.Userid == 0 {
 		logger.Debug("login email:" + registerRequest.Username + " doesn't exist!")
-		resultRsp.Code = 104
+		resultRsp.Code = 106
 		resultRsp.ExtraMsg = "login error : email doesn't exist!"
 		this.Data["json"] = &resultRsp
 		this.ServeJSON()
 		return
 	}
 
-
+	if user.Userid != 0 && strings.Compare(user.Pwd, registerRequest.Password) != 0 {
+		logger.Debug("login email:" + registerRequest.Username + " wrong password!")
+		resultRsp.Code = 107
+		resultRsp.ExtraMsg = "login error : wrong password!"
+		this.Data["json"] = &resultRsp
+		this.ServeJSON()
+		return
+	}
 
 	resultRsp.Code = 101
-	resultRsp.ExtraMsg = "register success!"
+	resultRsp.ExtraMsg = "login success!"
 	this.Data["json"] = &resultRsp
 	this.ServeJSON()
 }
