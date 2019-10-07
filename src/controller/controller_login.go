@@ -8,18 +8,18 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
-type RegisterController struct {
+type LoginController struct {
 	beego.Controller
 }
 
-type RegisterRequestBody struct {
+type LoginRequestBody struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Salt     string `json:"salt"`
 	Code     string `json:"code"`
 }
 
-func (this *RegisterController) Post() {
+func (this *LoginController) Post() {
 	var registerRequest RegisterRequestBody
 	var resultRsp = HelloResponse{}
 	resultRsp.Code = 100
@@ -34,7 +34,6 @@ func (this *RegisterController) Post() {
 		this.ServeJSON()
 		return
 	}
-	logger.Debug("register param : ",registerRequest)
 
 	var user model.TsUser
 	o := orm.NewOrm()
@@ -50,31 +49,16 @@ func (this *RegisterController) Post() {
 		return
 	}
 
-	if err == nil && user.Userid != 0 {
-		logger.Debug("register email:" + registerRequest.Username + " exist!")
+	if err == orm.ErrNoRows || user.Userid == 0 {
+		logger.Debug("login email:" + registerRequest.Username + " doesn't exist!")
 		resultRsp.Code = 104
-		resultRsp.ExtraMsg = "register error : email had registered!"
+		resultRsp.ExtraMsg = "login error : email doesn't exist!"
 		this.Data["json"] = &resultRsp
 		this.ServeJSON()
 		return
 	}
 
-	user.Email = registerRequest.Username
-	user.Pwd = registerRequest.Password
-	user.Salt = registerRequest.Salt
-	user.Code = registerRequest.Code
 
-	num, err := o.Insert(&user)
-	if num == 0 || err != nil {
-		if err != nil {
-			logger.Error("register email:" + registerRequest.Username + " error:" + err.Error())
-		}
-		resultRsp.Code = 105
-		resultRsp.ExtraMsg = "register error : insert database error!"
-		this.Data["json"] = &resultRsp
-		this.ServeJSON()
-		return
-	}
 
 	resultRsp.Code = 101
 	resultRsp.ExtraMsg = "register success!"
